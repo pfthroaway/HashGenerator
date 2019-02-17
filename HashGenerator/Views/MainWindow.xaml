@@ -6,7 +6,10 @@
         mc:Ignorable="d"
         Style="{StaticResource WindowStyle}"
         Title="{Binding Path=Content.Title, ElementName=MainFrame}"
-        WindowState="Maximized">
+        MinHeight="300"
+        MinWidth="800"
+        WindowState="Maximized"
+        Icon="../Key.png">
     <DockPanel>
         <Viewbox Stretch="Uniform">
             <Frame x:Name="MainFrame"

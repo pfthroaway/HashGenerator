@@ -11,7 +11,9 @@ namespace HashGenerator.Views
     /// </summary>
     public partial class HashGeneratorPage : Page, INotifyPropertyChanged
     {
-        private string _argon2Key = "", _pbkdf2Key = "", md5Hash = "";
+        private string _argon2Key, _pbkdf2Key, md5Hash;
+
+        #region Modifying Properties
 
         /// <summary>Represents the hashed Argon2 key.</summary>
         public string Argon2Key
@@ -46,6 +48,8 @@ namespace HashGenerator.Views
             }
         }
 
+        #endregion Modifying Properties
+
         #region Data-Binding
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -58,10 +62,10 @@ namespace HashGenerator.Views
 
         #region Argon2
 
-        /// <summary>Converts the plaintext to a Argon2 key.</summary>
+        /// <summary>Converts the plaintext to an Argon2 key.</summary>
         private void ConvertArgon2() => Argon2Key = Argon2.HashPassword(TxtArgon2Plaintext.Text);
 
-        /// <summary>Clears both TextBoxes and sets the focus to the txtPlaintext TextBox.</summary>
+        /// <summary>Clears both Argon2 TextBoxes and sets the focus to the plaintext TextBox.</summary>
         private void ClearArgon2()
         {
             TxtArgon2Plaintext.Clear();
@@ -72,7 +76,7 @@ namespace HashGenerator.Views
         /// <summary>Copies the Argon2 Key to the clipboard.</summary>
         private void CopyArgon2ToClipboard()
         {
-            Clipboard.SetText(TxtArgon2Plaintext.Text);
+            Clipboard.SetText(TxtArgon2Key.Text);
             TxtArgon2Plaintext.Focus();
         }
 
@@ -83,7 +87,7 @@ namespace HashGenerator.Views
             else
                 ClearArgon2();
 
-            ToggleButtons(TxtArgon2Plaintext.Text.Length > 0);
+            CheckButtons();
         }
 
         #endregion Argon2
@@ -93,7 +97,7 @@ namespace HashGenerator.Views
         /// <summary>Converts the plaintext to a PBKDF2 key.</summary>
         private void ConvertPBKDF2() => PBKDF2Key = PBKDF2.HashPassword(TxtPBKDF2Plaintext.Text);
 
-        /// <summary>Clears both TextBoxes and sets the focus to the txtPlaintext TextBox.</summary>
+        /// <summary>Clears both PBKDF2 TextBoxes and sets the focus to the plaintext TextBox.</summary>
         private void ClearPBKDF2()
         {
             TxtPBKDF2Plaintext.Clear();
@@ -104,7 +108,7 @@ namespace HashGenerator.Views
         /// <summary>Copies the PBKDF2 Key to the clipboard.</summary>
         private void CopyPBKDF2ToClipboard()
         {
-            Clipboard.SetText(TxtPBKDF2Plaintext.Text);
+            Clipboard.SetText(TxtPBKDF2Key.Text);
             TxtPBKDF2Plaintext.Focus();
         }
 
@@ -115,17 +119,17 @@ namespace HashGenerator.Views
             else
                 ClearPBKDF2();
 
-            ToggleButtons(TxtPBKDF2Plaintext.Text.Length > 0);
+            CheckButtons();
         }
 
         #endregion PBKDF2
 
         #region MD5
 
-        /// <summary>Converts the plaintext to a MD5 key.</summary>
+        /// <summary>Converts the plaintext to an MD5 key.</summary>
         private void ConvertMD5() => Md5Hash = MD5.HashMD5(TxtMD5Plaintext.Text);
 
-        /// <summary>Clears both TextBoxes and sets the focus to the txtPlaintext TextBox.</summary>
+        /// <summary>Clears both MD5 TextBoxes and sets the focus to the plaintext TextBox.</summary>
         private void ClearMD5()
         {
             TxtMD5Plaintext.Clear();
@@ -136,7 +140,7 @@ namespace HashGenerator.Views
         /// <summary>Copies the MD5 Key to the clipboard.</summary>
         private void CopyMD5ToClipboard()
         {
-            Clipboard.SetText(TxtMD5Plaintext.Text);
+            Clipboard.SetText(TxtMD5Key.Text);
             TxtMD5Plaintext.Focus();
         }
 
@@ -147,14 +151,14 @@ namespace HashGenerator.Views
             else
                 ClearMD5();
 
-            ToggleButtons(TxtMD5Plaintext.Text.Length > 0);
+            CheckButtons();
         }
 
         #endregion MD5
 
         #region Button-Click Methods
 
-        private void btnClear_Click(object sender, RoutedEventArgs e)
+        private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
             if (TabArgon2.IsSelected)
                 ClearArgon2();
@@ -164,7 +168,7 @@ namespace HashGenerator.Views
                 ClearMD5();
         }
 
-        private void btnClipboard_Click(object sender, RoutedEventArgs e)
+        private void BtnClipboard_Click(object sender, RoutedEventArgs e)
         {
             if (TabArgon2.IsSelected)
                 CopyArgon2ToClipboard();
@@ -174,24 +178,22 @@ namespace HashGenerator.Views
                 CopyMD5ToClipboard();
         }
 
-        private void btnExit_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
+        private void BtnExit_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
 
         #endregion Button-Click Methods
 
         #region Button-Manipulation
 
-        /// <summary>Toggles Buttons on the Window.</summary>
-        private void ToggleButtons(bool enabled)
-        {
-            btnClear.IsEnabled = enabled;
-            btnClipboard.IsEnabled = enabled;
-        }
+        /// <summary>Checks whether the Clear and Copy Buttons should be enabled.</summary>
+        private void CheckButtons() => BtnClear.IsEnabled = BtnClipboard.IsEnabled = TabArgon2.IsSelected ? TxtArgon2Plaintext.Text.Length > 0 : TabPBKDF2.IsSelected ? TxtPBKDF2Plaintext.Text.Length > 0 : TabMD5.IsSelected && TxtMD5Plaintext.Text.Length > 0;
 
         #endregion Button-Manipulation
 
         #region Window-Manipulation Methods
 
         public HashGeneratorPage() => DataContext = this;
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) => CheckButtons();
 
         private void Page_Loaded(object sender, RoutedEventArgs e) =>
             TxtArgon2Plaintext.Focus();
