@@ -1,14 +1,14 @@
 ﻿using System.Globalization;
 
-namespace ExtensionsCore.DataTypeHelpers
+namespace Extensions.DataTypeHelpers
 {
     /// <summary>Extension class to more easily parse longs.</summary>
     public static class LongHelper
     {
         /// <summary>Utilizes long.TryParse to easily parse an Integer.</summary>
-        /// <param name="obj">Object to be parsed</param>
+        /// <param name="value">Object to be parsed</param>
         /// <returns>Parsed integer</returns>
-        public static long Parse(object obj) => Parse(obj.ToString());
+        public static long Parse(object value) => Parse(value.ToString());
 
         /// <summary>Utilizes long.TryParse to easily parse an Integer.</summary>
         /// <param name="text">Text to be parsed</param>
